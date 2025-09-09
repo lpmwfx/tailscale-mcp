@@ -1,0 +1,24 @@
+{
+  "name": "tailscale-mcp",
+  "version": "2.0.0",
+  "description": "Tailscale MCP server using CLI commands",
+  "main": "src/index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "node --watch src/index.js",
+    "test": "node --test"
+  },
+  "keywords": ["mcp", "tailscale", "terminal", "cli"],
+  "author": "Lars <lpm@wfx.com>",
+  "license": "MIT",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "bin": {
+    "tailscale-mcp": "./src/index.js"
+  }
+}
