@@ -26,7 +26,9 @@ class TailscaleMCPServer {
     this.apiKey = process.env.TAILSCALE_TOKEN;
 
     if (!this.tailnet || !this.apiKey) {
-      throw new Error("TAILNET and TAILSCALE_TOKEN environment variables are required");
+      console.error("ERROR: TAILNET and TAILSCALE_TOKEN environment variables are required");
+      console.error("Please set these environment variables in your Warp MCP configuration.");
+      process.exit(1);
     }
 
     this.setupToolHandlers();
@@ -252,20 +254,32 @@ class TailscaleMCPServer {
   }
 
   async start() {
-    const transport = new StdioServerTransport();
-    await this.server.connect(transport);
-    console.error("Tailscale MCP server running on stdio");
+    try {
+      const transport = new StdioServerTransport();
+      await this.server.connect(transport);
+      console.error("Tailscale MCP server running on stdio");
+    } catch (error) {
+      console.error("Failed to start MCP server:", error.message);
+      process.exit(1);
+    }
   }
 }
 
 async function main() {
-  const server = new TailscaleMCPServer();
-  await server.start();
+  try {
+    console.error("Starting Tailscale MCP server...");
+    const server = new TailscaleMCPServer();
+    await server.start();
+  } catch (error) {
+    console.error("Failed to initialize server:", error.message);
+    process.exit(1);
+  }
 }
 
+// Only run if this file is executed directly
 if (import.meta.url === `file://${process.argv[1]}`) {
   main().catch((error) => {
-    console.error("Server error:", error);
+    console.error("Unhandled server error:", error);
     process.exit(1);
   });
 }
